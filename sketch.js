@@ -3,11 +3,13 @@ var temp = [];
 var p1turn = true;
 var board = [];
 var n;
-var clicked = 0;
+var clicked = false;
 var lastRow;
 var lastColumn;
 var gameOver;
 var canClick;
+const BOARD_LENGTH = 5;
+const PIECE_SIZE = 70;
 
 function preload() {
     img = loadImage("assets/board.png");
@@ -34,12 +36,10 @@ function draw() {
     image(img, 0, 0);
     click();
     changeText();
-
     if (checkWinner(board)) {
         gameOver = true;
         canClick = false;
     }
-
     resetButton();
 }
 
@@ -48,8 +48,8 @@ function click() {
     var date = new Date();
     var time = date.getTime();
     if (mouseIsPressed) {
-        if (time - n > 250 || clicked == 0) {
-            clicked = 1;
+        if (time - n > 250 || !clicked) {
+            clicked = true;
             var d = new Date();
             n = d.getTime();
             if (canClick) {
@@ -76,7 +76,7 @@ function click() {
 }
 
 function dropPiece(column) {
-    for (var i = 5; i >= 0; i--) {
+    for (var i = BOARD_LENGTH; i >= 0; i--) {
         if (board[i][column].empty) {
             board[i][column].drawCircle();
             board[i][column].empty = false;
@@ -93,7 +93,7 @@ this.Point = function(x, y) {
     this.x = x;
     this.y = y;
     this.empty = true;
-    this.size = 70;
+    this.size = PIECE_SIZE;
     this.team;
 
     this.drawCircle = function() {
@@ -104,11 +104,8 @@ this.Point = function(x, y) {
 function fillBoardArray() {
     currentLetter = 0;
     for (var i = 0; i < height; i++) {
-
         if ((i - 41) % 80 == 0) {
-
             for (var j = 0; j < width; j++) {
-
                 if ((j - 50) % 90 == 0) {
                     //j is x, i is y
                     temp[currentLetter] = new Point(j, i);
@@ -121,7 +118,6 @@ function fillBoardArray() {
 }
 
 function switchColor(turn) {
-
     if (turn) {
         fill(250, 0, 0);
     } else {
@@ -156,9 +152,7 @@ function changeText() {
 function resetButton() {
     var button = document.getElementById("reset");
     button.disabled = true;
-    if (gameOver) {
-        button.disabled = false;
-    }
+    if (gameOver) button.disabled = false;
     button.onclick = function() { history.go(0) };
 }
 
