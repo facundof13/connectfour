@@ -41,6 +41,16 @@ function draw() {
         canClick = false;
     }
     resetButton();
+
+
+}
+
+keyPressed = (k) => {
+    if (k.keyCode === 32) {
+        console.log({mouseX: mouseX, mouseY: mouseY})
+    }
+
+    console.log()
 }
 
 
@@ -54,21 +64,7 @@ function click() {
             n = d.getTime();
             if (canClick) {
                 if (mouseY <= height && mouseX > 0 && mouseX < width) {
-                    if (mouseX > 542.5) {
-                        dropPiece(6);
-                    } else if (mouseX > 457.5) {
-                        dropPiece(5);
-                    } else if (mouseX > 361.5) {
-                        dropPiece(4);
-                    } else if (mouseX > 273.5) {
-                        dropPiece(3);
-                    } else if (mouseX > 185.5) {
-                        dropPiece(2);
-                    } else if (mouseX > 97.5) {
-                        dropPiece(1);
-                    } else if (mouseX < 97.5) {
-                        dropPiece(0);
-                    }
+                   dropPiece(Math.floor(mouseX / 91))
                 }
             }
         }
@@ -118,42 +114,30 @@ function fillBoardArray() {
 }
 
 function switchColor(turn) {
-    if (turn) {
-        fill(250, 0, 0);
-    } else {
-        fill(0, 0, 0);
-    }
+    turn ? fill(250,0,0) : fill(0,0,0)
 }
 
 function switchTurn() {
-    if (p1turn) {
-        p1turn = false;
-    } else {
-        p1turn = true;
-    }
+    p1turn = !p1turn
     switchColor(p1turn);
 }
 
 function changeText() {
     var element = document.getElementById("prompt");
+
     if (gameOver) {
         element.innerHTML = "Game Over!" + (p1turn ? " Player 2" : " Player 1") + " Wins!";
         element.style.color = p1turn ? 'black' : 'red';
-    }
-    if (p1turn && !gameOver) {
-        element.innerHTML = "Player 1 turn!";
-        element.style.color = 'red';
-    } else if (!gameOver) {
-        element.innerHTML = "Player 2 turn!";
-        element.style.color = 'black';
+    }else {
+        element.innerHTML = p1turn ? "Player 1 turn!" : "Player 2 turn!";
+        element.style.color = p1turn ? "red" : "black"
     }
 }
 
 function resetButton() {
     var button = document.getElementById("reset");
-    button.disabled = true;
-    if (gameOver) button.disabled = false;
-    button.onclick = function() { history.go(0) };
+    button.disabled = !gameOver;
+    button.onclick = () => { history.go(0) };
 }
 
 function chkLine(a, b, c, d) {
